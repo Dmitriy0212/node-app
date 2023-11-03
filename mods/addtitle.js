@@ -8,36 +8,44 @@ export function addTitle(body) {
             postPhotoUrl: body.postPhotoUrl,
             postDescription: body.postDescription,
             id: rundomId(),
-            tegs: body.postTegs,
+            tegs: addTegs(body.postTegs),
             yearCreat: body.postyearCreat,
-            genre: body.genre
+            genre: addGenre(body.genre)
         };
-        function addTegs() {
+        function addTegs(postTegs) {
             try {
-                if (doc.tegs == '') {
-                    return doc.tegs = []
+                if (postTegs == '') {
+                    return []
                 }
-                if (doc.tegs !== '') {
-                    return doc.tegs = doc.tegs.split(' ')
+                if (postTegs !== '') {
+                    if (postTegs.includes(' ')) {
+                        return postTegs.split(' ')
+                    }
+                    let a = []
+                    a.push(postTegs)
+                    return a
                 }
             } catch (err) {
                 console.log('Ошибка создания поста', err);
             }
         }
-        addTegs()
-        function addGenre() {
+        function addGenre(genre) {
             try {
-                if (doc.genre == '') {
-                    return doc.genre = []
+                if (genre == '') {
+                    return []
                 }
-                if (doc.genre !== '') {
-                    return doc.genre = doc.genre.split(' ')
+                if (genre !== '') {
+                    if (genre.includes(' ')) {
+                        return genre.split(' ')
+                    }
+                    let a = []
+                    a.push(genre)
+                    return a
                 }
             } catch (err) {
                 console.log('Ошибка создания поста', err);
             }
         }
-        addGenre()
         if (text.titles == undefined) {
             text.titles = []
         }
