@@ -1,3 +1,5 @@
+
+import https from"https";  // для организации https
 import express from 'express';
 import fs from 'fs';
 import { addTitle } from './mods/addtitle.js';
@@ -8,6 +10,7 @@ import multer from 'multer';
 import cors from 'cors';
 const app = express();
 
+
 app.set('view engine', 'ejs');
 
 app.use(express.json());
@@ -17,7 +20,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static('pabl'));
 
 app.use(cors());
-
 const storage = multer.diskStorage({
     destination: (_, __, cb) => {
         if (!fs.existsSync('uploads')) {
@@ -40,6 +42,19 @@ app.post('/upload', upload.single('image'), (req, res) => {
     });
 });
 
+
+const PORT = process.env.PORT || 4444;
+const HOST = 'localhost';
+
+
+// прочитайте ключи
+const key = fs.readFileSync("ca.key");
+const cert = fs.readFileSync("ca.crt");
+
+// создайте HTTPS-сервер
+const server = https.createServer({ key, cert }, app);
+
+// добавьте тестовый роут
 app.get('/', (req, res) => {
     res.json(addData())
 });
@@ -51,6 +66,7 @@ app.post('/add', (req, res) => {
 
 app.get('/post', function (req, res) {
     let id = req.query.id;
+    console.log(id)
     res.json(getOnePost(id))
 });
 
@@ -59,9 +75,6 @@ app.post('/post/edit', (req, res) => {
     res.redirect('/edit')
 });
 
-const PORT = process.env.PORT || 8080;
-const HOST = 'localhost';
-
-app.listen(PORT, () => {
-    console.log(`Server run: http://${HOST}:${PORT}`)
-})
+server.listen(PORT, () => {
+    console.log(`Server run: https://${HOST}:${PORT}`)
+});
